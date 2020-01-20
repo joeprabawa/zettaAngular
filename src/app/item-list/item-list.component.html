@@ -1,0 +1,85 @@
+<div class="container">
+  <div class="row">
+    <div class="col s12 m12">
+      <h3 class="center">[NPC] Beginner Merchant</h3>
+      <p>
+        Hello Adventurer, welcome to the town of Angular! Here you can explore
+        all the exciting stuff like meeting weird monster, learning new spell,
+        and discovering rare item. But first, you need some weapon/spell to
+        accompany you along the way! I will give you 1000 gold, so choose your
+        weapon/spell wisely~
+      </p>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col m12 s12">
+    <div class="col s12 m6 l4" *ngFor="let item of items">
+      <div class="card" style="height: 500px;">
+        <div class="card-image">
+          <img
+            style="height: 200px; object-fit: cover;"
+            src="{{ item.image }}"
+          />
+
+          <a
+            (click)="addtoCart(item)"
+            [class]="
+              item.addedToCart
+                ? 'red lighten-1 btn-floating halfway-fab btn-large waves-effect waves-light'
+                : 'btn-floating halfway-fab btn-large waves-effect waves-light'
+            "
+            ><i class="material-icons">{{
+              item.addedToCart ? "remove_shopping_cart" : "add_shopping_cart"
+            }}</i></a
+          >
+        </div>
+        <div class="card-content">
+          <h5 class="header">{{ item.name }}</h5>
+          <p>
+            {{ item.desc }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col m12 s12 ">
+    <div class="card elevation-0 grey-text text-darken-4">
+      <div class="card-content">
+        <div class="row">
+          <div class="col s12">
+            <h5 class="header">Cart</h5>
+            <p class="grey-text" style="margin-top: -8px;">
+              Credits : 1000 Gold
+            </p>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="col s12" *ngFor="let item of cart">
+            <p class="left-align col s6">{{ item.name }}</p>
+            <p class="right-align col s6">{{ item.price }}</p>
+          </span>
+        </div>
+        <hr />
+        <div class="row">
+          <div class="col s12">
+            <p class="left-align col s6">Total</p>
+            <p class="right-align col s6">
+              {{ calculate() }}
+            </p>
+            <a
+              (click)="buy()"
+              style="width: 100%; margin-top: 1.6rem;"
+              class="waves-effect waves-teal btn-flat btn white grey-text text-darken-4  "
+              >buy</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
