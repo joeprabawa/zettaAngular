@@ -10,8 +10,8 @@ import { Playlist } from "../interfaces/Playlist";
 })
 export class PlayListTaskComponent implements OnInit {
   playlists: Playlist[];
-  totalSongs: any = 0;
-  totalMinutes: any = 0;
+  totalSongs: Number = 0;
+  totalMinutes: Number = 0;
 
   constructor(private plyService: PlaylistService) {}
 
