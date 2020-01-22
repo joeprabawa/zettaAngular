@@ -1,3 +1,20 @@
+<nav class="white z-depth-0">
+  <div class="nav-wrapper container ">
+    <a href="#" class="brand-logo">Logo</a>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <li
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        *ngFor="let route of routes"
+      >
+        <a class="grey-text text-darken-4" routerLink="{{ route.path }}">{{
+          route.name
+        }}</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
 <div class="container">
-  <app-item-list></app-item-list>
+  <router-outlet></router-outlet>
 </div>

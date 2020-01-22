@@ -1,0 +1,91 @@
+<div class="row">
+  <div class="col s12 m12">
+    <h3 class="center">The Playlists</h3>
+    <p>
+      Here you can create your own playlist, edit your already existing
+      playlist, add songs, and show it to the world!
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col s12 m12">
+    <button
+      data-target="modal1"
+      class="modal-trigger waves-effect waves-light btn left yellow lighten-1 grey-text text-darken-4"
+    >
+      <i class="material-icons left">playlist_add</i> new playlist
+    </button>
+  </div>
+
+  <div class="row">
+    <div class="col s12">
+      <div class="card" style="margin-top: 2rem;">
+        <div class="card-title"><span class="title">Card Title</span></div>
+        <div class="card-content grey-text text-darken-4">
+          <p>
+            I am a very simple card. I am good at containing small bits of
+            information. I am convenient because I require little markup to use
+            effectively.
+          </p>
+        </div>
+        <div class="card-action">
+          <a href="#">This is a link</a>
+          <a href="#">This is a link</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal1" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h5 style="margin-bottom: 1.6rem;">Create New Playlist</h5>
+    <div class="row">
+      <form class="col s12">
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="playlistname" type="text" class="validate" />
+            <label for="playlistname">Playlist Name</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="desc" type="text" class="validate" />
+            <label for="desc">Description</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12 m4">
+            <input id="title" type="text" class="validate" />
+            <label for="title">Song Title</label>
+          </div>
+          <div class="input-field col s12 m3">
+            <input id="artist" type="text" class="validate" />
+            <label for="artist">Artist</label>
+          </div>
+          <div class="input-field col s12 m3 with-span">
+            <input id="duration" type="number" class="validate" /><span>
+              minutes</span
+            >
+            <label for="duration">Duration</label>
+          </div>
+          <div class="input-field col s12 m2 with-button">
+            <a
+              class="btn-floating btn-small btn-flat waves-effect waves-light red form"
+              ><i class="tiny material-icons">remove</i></a
+            >
+            <a
+              class="btn-floating btn-small btn-flat waves-effect waves-light indigo form"
+              ><i class="tiny material-icons">add</i></a
+            >
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a class="modal-close waves-effect waves-red lighten-1 btn-flat">cancel</a>
+    <a class="modal-close waves-effect waves-yellow btn-flat">submit</a>
+  </div>
+</div>

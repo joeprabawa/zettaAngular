@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Items } from "../interface";
+import { Items } from "../interfaces/Item";
 import { ItemsService } from "../items.service";
 
 declare var M: any;
@@ -24,6 +24,7 @@ export class ItemListComponent implements OnInit {
   addtoCart(cart: Items) {
     // Toggle AddedToCart Status
     cart.addedToCart = !cart.addedToCart;
+
     // Display Message Toggle Cart
     cart.addedToCart
       ? M.toast({
@@ -34,6 +35,7 @@ export class ItemListComponent implements OnInit {
           html: `<i class="material-icons left">remove_circle_outline</i> ${cart.name} Removed`,
           classes: "rounded red lighten-1"
         });
+
     // Add / Remove Item From Cart
     cart.addedToCart === true
       ? this.cart.push(cart)
@@ -68,12 +70,5 @@ export class ItemListComponent implements OnInit {
 
   ngOnInit() {
     this.getItems();
-    M.toast({
-      html: `<i class="material-icons left">info_outline</i>Scroll to bottom of the page, to view cart section`,
-      classes: "rounded yellow lighten-1 grey-text text-darken-4",
-      displayLength: 6000,
-      inDuration: 500,
-      outDuration: 750
-    });
   }
 }

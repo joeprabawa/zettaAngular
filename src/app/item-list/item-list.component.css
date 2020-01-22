@@ -3,3 +3,9 @@
   -moz-box-shadow: 10px 10px 0px 0px rgba(242, 245, 155, 1);
   box-shadow: 10px 10px 0px 0px rgba(242, 245, 155, 1);
 }
+
+.card-content > p.price {
+  font-size: 0.8rem;
+  margin-top: -8px;
+  margin-bottom: 10px;
+}

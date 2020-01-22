@@ -1,21 +1,20 @@
-<div class="container">
-  <div class="row">
-    <div class="col s12 m12">
-      <h3 class="center">[NPC] Beginner Merchant</h3>
-      <p>
-        Hello Adventurer, welcome to the town of Angular! Here you can explore
-        all the exciting stuff like meeting weird monster, learning new spell,
-        and discovering rare item. But first, you need some weapon/spell to
-        accompany you along the way! I will give you 1000 gold, so choose your
-        weapon/spell wisely~
-      </p>
-    </div>
+<div class="row">
+  <div class="col s12 m12">
+    <h3 class="center">[NPC] Beginner Merchant</h3>
+    <p>
+      Hello Adventurer, welcome to the town of Angular! Here you can explore all
+      the exciting stuff like meeting weird monster, learning new spell, and
+      discovering rare item. But first, you need some weapon/spell to accompany
+      you along the way! I will give you 1000 gold, so choose your weapon/spell
+      wisely~
+    </p>
   </div>
 </div>
+
 <div class="row">
   <div class="col m12 s12">
     <div class="col s12 m6 l4" *ngFor="let item of items">
-      <div class="card" style="height: 500px;">
+      <div class="card" style="height: 550px;">
         <div class="card-image">
           <img
             style="height: 200px; object-fit: cover;"
@@ -36,6 +35,7 @@
         </div>
         <div class="card-content">
           <h5 class="header">{{ item.name }}</h5>
+          <p class="price grey-text ">Price : {{ item.price }}</p>
           <p>
             {{ item.desc }}
           </p>
