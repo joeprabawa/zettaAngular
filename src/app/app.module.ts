@@ -1,6 +1,7 @@
 import { BrowserModule } from "@angular/platform-browser";
-import { NgModule, OnInit } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { ReactiveFormsModule } from "@angular/forms";
 
 import { AppComponent } from "./app.component";
 import { ItemListComponent } from "./item-list/item-list.component";
@@ -14,7 +15,11 @@ const appRoutes: Routes = [
 
 @NgModule({
   declarations: [AppComponent, ItemListComponent, PlayListTaskComponent],
-  imports: [BrowserModule, RouterModule.forRoot(appRoutes)],
+  imports: [
+    BrowserModule,
+    RouterModule.forRoot(appRoutes),
+    ReactiveFormsModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col s12 m12">
     <h3 class="center">The Playlists</h3>
-    <p>
+    <p class="center">
       Here you can create your own playlist, edit your already existing
       playlist, add songs, and show it to the world!
     </p>
@@ -19,66 +19,124 @@
   </div>
 
   <div class="row">
-    <div class="col s12">
+    <div class="col s12" *ngFor="let ply of playlists">
       <div class="card" style="margin-top: 2rem;">
-        <div class="card-title"><span class="title">Card Title</span></div>
-        <div class="card-content grey-text text-darken-4">
-          <p>
-            I am a very simple card. I am good at containing small bits of
-            information. I am convenient because I require little markup to use
-            effectively.
+        <div class="card-title">
+          <h5 class="header">{{ ply.name }}</h5>
+          <p
+            class="grey-text"
+            style="font-weight: 400; margin-top: -5px; font-size: 1rem;"
+          >
+            total {{ ply.totalSongs }}
+            {{ totalSongs == 1 ? "song" : "songs" }} ,
+            {{ ply.totalDuration }} minutes
+          </p>
+          <p
+            style="font-size: 1rem; margin: -5px 0; font-weight: 400; text-transform: capitalize;"
+          >
+            {{ ply.description }}
           </p>
         </div>
+        <div class="card-content grey-text text-darken-4">
+          <div class="row" *ngFor="let song of ply.songs">
+            <div class="col s12">
+              <h5 class="header" style="font-size: 1.2rem;">
+                <i class="material-icons left">audiotrack</i>{{ song.title }}
+                <p class="grey-text" style="font-size: 1rem;">
+                  by {{ song.artist }} · {{ song.duration }}
+                  {{ song.duration == 1 ? "minute" : "minutes" }}
+                </p>
+              </h5>
+            </div>
+          </div>
+        </div>
         <div class="card-action">
-          <a href="#">This is a link</a>
-          <a href="#">This is a link</a>
+          <button class="btn waves-effect waves-red btn-flat red-text">
+            delete
+          </button>
+          <button class="btn waves-effect waves-light btn-flat black-text">
+            edit
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- Modal New Playlist -->
 <div id="modal1" class="modal modal-fixed-footer">
   <div class="modal-content">
     <h5 style="margin-bottom: 1.6rem;">Create New Playlist</h5>
     <div class="row">
-      <form class="col s12">
+      <form class="col s12" [formGroup]="plyForm">
         <div class="row">
           <div class="input-field col s12">
-            <input id="playlistname" type="text" class="validate" />
+            <input
+              id="playlistname"
+              type="text"
+              class="validate"
+              formControlName="name"
+            />
             <label for="playlistname">Playlist Name</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12">
-            <input id="desc" type="text" class="validate" />
+            <input
+              id="desc"
+              type="text"
+              class="validate"
+              formControlName="description"
+            />
             <label for="desc">Description</label>
           </div>
         </div>
-        <div class="row">
-          <div class="input-field col s12 m4">
-            <input id="title" type="text" class="validate" />
-            <label for="title">Song Title</label>
-          </div>
-          <div class="input-field col s12 m3">
-            <input id="artist" type="text" class="validate" />
-            <label for="artist">Artist</label>
-          </div>
-          <div class="input-field col s12 m3 with-span">
-            <input id="duration" type="number" class="validate" /><span>
-              minutes</span
-            >
-            <label for="duration">Duration</label>
-          </div>
-          <div class="input-field col s12 m2 with-button">
-            <a
-              class="btn-floating btn-small btn-flat waves-effect waves-light red form"
-              ><i class="tiny material-icons">remove</i></a
-            >
-            <a
-              class="btn-floating btn-small btn-flat waves-effect waves-light indigo form"
-              ><i class="tiny material-icons">add</i></a
-            >
+        <div class="row" formArrayName="songs">
+          <div
+            *ngFor="let play of playlistForm.controls; let i = index"
+            [formGroupName]="i"
+          >
+            <div class="input-field col s12 m4">
+              <input
+                id="title{{ i }}"
+                type="text"
+                class="validate"
+                formControlName="title"
+                placeholder="Title"
+              />
+            </div>
+            <div class="input-field col s12 m3">
+              <input
+                id="artist{{ i }} "
+                type="text"
+                class="validate"
+                formControlName="artist"
+                placeholder="Artist"
+              />
+            </div>
+            <div class="input-field col s12 m3 with-span">
+              <input
+                id="duration{{ i }} "
+                type="number"
+                class="validate"
+                formControlName="duration"
+                placeholder="Duration"
+              /><span> minutes</span>
+            </div>
+            <div class="input-field col s12 m2 with-button">
+              <a
+                *ngIf="i >= 1"
+                (click)="deleteField(i)"
+                class="btn-floating btn-small btn-flat waves-effect waves-light red form"
+                ><i class="tiny material-icons">remove</i></a
+              >
+              <a
+                *ngIf="i == playlistForm.length - 1"
+                (click)="addField()"
+                class="btn-floating btn-small btn-flat waves-effect waves-light indigo form"
+                ><i class="tiny material-icons">add</i></a
+              >
+            </div>
           </div>
         </div>
       </form>
@@ -86,6 +144,12 @@
   </div>
   <div class="modal-footer">
     <a class="modal-close waves-effect waves-red lighten-1 btn-flat">cancel</a>
-    <a class="modal-close waves-effect waves-yellow btn-flat">submit</a>
+    <button
+      [disabled]="!plyForm.valid"
+      class="modal-close waves-effect waves-yellow btn-flat"
+      (click)="onSubmit()"
+    >
+      submit
+    </button>
   </div>
 </div>
