@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormArray, Validators } from "@angular/forms";
 
 import { PlaylistService } from "../playlist.service";
 import { Playlist } from "../interfaces/Playlist";
+import { Song } from "../interfaces/Song";
 
 declare var M: any;
 
@@ -13,26 +14,44 @@ declare var M: any;
 })
 export class PlayListTaskComponent implements OnInit {
   playlists: Playlist[];
-  totalDur: number = 0;
-
   plyForm: FormGroup;
+  editing: Boolean;
+  each: Playlist;
 
   constructor(private fb: FormBuilder, private plyService: PlaylistService) {}
 
   ngOnInit() {
-    // Initiate Form
-    this.setForm();
-
-    this.getItems();
-    let modal = document.querySelectorAll(".modal");
-    let init = M.Modal.init(modal);
+    this.initForm();
+    this.initItems();
+    this.initModal();
   }
 
   get playlistForm() {
     return this.plyForm.get("songs") as FormArray;
   }
 
-  setForm() {
+  initModal() {
+    let modal = document.querySelectorAll(".modal");
+    let init = M.Modal.init(modal);
+  }
+
+  editingForm(params) {
+    this.editing = true;
+    this.each = params;
+    this.plyForm = this.fb.group({
+      name: ["", Validators.required],
+      description: ["", Validators.required],
+      songs: this.fb.array(params.songs.map(v => this.fb.group(v)))
+    });
+    const { name, description, songs } = params;
+    this.plyForm.patchValue({
+      name,
+      description,
+      songs
+    });
+  }
+
+  initForm() {
     this.plyForm = this.fb.group({
       name: ["", Validators.required],
       description: ["", Validators.required],
@@ -45,7 +64,8 @@ export class PlayListTaskComponent implements OnInit {
       ])
     });
   }
-  getItems(): void {
+
+  initItems(): void {
     this.plyService.getAllPly().subscribe(ply => {
       this.playlists = ply;
     });
@@ -62,20 +82,38 @@ export class PlayListTaskComponent implements OnInit {
     this.playlistForm.removeAt(i);
   }
   onSubmit() {
-    const durationAndLength = this.plyForm.value.songs.reduce(
-      (acc, val, _, arr) => {
-        acc["totalDuration"] = this.totalDur += val.duration;
-        acc["totalSongs"] = arr.length;
-        return acc;
-      },
-      {}
-    );
-
+    const durationAndLength = this.reduce(this.plyForm.value.songs);
     this.playlists.unshift({
       ...this.plyForm.value,
       ...durationAndLength
     });
+    this.initForm();
+  }
 
-    this.setForm();
+  onEdit() {
+    const index = this.playlists.indexOf(
+      this.playlists.find(i => i.name == this.each.name)
+    );
+
+    const durationAndLength = this.reduce(this.plyForm.value.songs);
+    this.playlists.splice(index, 1, {
+      ...this.plyForm.value,
+      ...durationAndLength
+    });
+    this.initForm();
+    this.editing = false;
+  }
+
+  onDelete({ name }) {
+    return (this.playlists = this.playlists.filter(v => v.name !== name));
+  }
+
+  reduce(params: Song[]) {
+    let totalDur = 0;
+    return params.reduce((acc, val, _, arr) => {
+      acc["totalDuration"] = totalDur += val.duration;
+      acc["totalSongs"] = arr.length;
+      return acc;
+    }, {});
   }
 }

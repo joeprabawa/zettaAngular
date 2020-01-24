@@ -2,6 +2,24 @@ import { Playlist } from "../interfaces/Playlist";
 
 export const PLAYLISTS: Playlist[] = [
   {
+    name: "The 1975",
+    totalDuration: 9,
+    totalSongs: 2,
+    description: "List of The 1975 Songs",
+    songs: [
+      {
+        title: "Love It If We Made It",
+        artist: "The 1975",
+        duration: 4
+      },
+      {
+        title: "How To Draw A Petrichor",
+        artist: "The 1975",
+        duration: 5
+      }
+    ]
+  },
+  {
     name: "Kopikustik",
     totalDuration: 5,
     totalSongs: 2,
