@@ -132,7 +132,7 @@
             </div>
             <div class="input-field col s12 m2 with-button">
               <a
-                *ngIf="i >= 1"
+                *ngIf="playlistForm.length > 1"
                 (click)="deleteField(i)"
                 class="btn-floating btn-small btn-flat waves-effect waves-light red form"
                 ><i class="tiny material-icons">remove</i></a

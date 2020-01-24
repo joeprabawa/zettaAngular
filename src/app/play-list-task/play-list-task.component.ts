@@ -13,10 +13,10 @@ declare var M: any;
   styleUrls: ["./play-list-task.component.css"]
 })
 export class PlayListTaskComponent implements OnInit {
-  playlists: Playlist[];
+  playlists?: Playlist[] = [];
   plyForm: FormGroup;
   editing: Boolean;
-  each: Playlist;
+  each?: Playlist;
 
   constructor(private fb: FormBuilder, private plyService: PlaylistService) {}
 
@@ -108,7 +108,7 @@ export class PlayListTaskComponent implements OnInit {
     return (this.playlists = this.playlists.filter(v => v.name !== name));
   }
 
-  reduce(params: Song[]) {
+  reduce(params: any[]): Song {
     let totalDur = 0;
     return params.reduce((acc, val, _, arr) => {
       acc["totalDuration"] = totalDur += val.duration;
