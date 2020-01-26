@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Items } from "../interfaces/Item";
-import { ItemsService } from "../items.service";
+import { ItemsService } from "../services/items.service";
 
 declare var M: any;
 

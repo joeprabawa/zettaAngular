@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, FormArray, Validators } from "@angular/forms";
 
-import { PlaylistService } from "../playlist.service";
+import { PlaylistService } from "../services/playlist.service";
 import { Playlist } from "../interfaces/Playlist";
 import { Song } from "../interfaces/Song";
 
@@ -13,10 +13,15 @@ declare var M: any;
   styleUrls: ["./play-list-task.component.css"]
 })
 export class PlayListTaskComponent implements OnInit {
-  playlists?: Playlist[] = [];
+  playlists: Playlist[];
   plyForm: FormGroup;
   editing: Boolean;
-  each?: Playlist;
+  each: Playlist;
+  song: FormGroup = this.fb.group({
+    title: ["", Validators.required],
+    artist: ["", Validators.required],
+    duration: ["", Validators.required]
+  });
 
   constructor(private fb: FormBuilder, private plyService: PlaylistService) {}
 
@@ -35,6 +40,14 @@ export class PlayListTaskComponent implements OnInit {
     let init = M.Modal.init(modal);
   }
 
+  initForm() {
+    this.plyForm = this.fb.group({
+      name: ["", Validators.required],
+      description: ["", Validators.required],
+      songs: this.fb.array([this.song])
+    });
+  }
+
   editingForm(params) {
     this.editing = true;
     this.each = params;
@@ -51,69 +64,32 @@ export class PlayListTaskComponent implements OnInit {
     });
   }
 
-  initForm() {
-    this.plyForm = this.fb.group({
-      name: ["", Validators.required],
-      description: ["", Validators.required],
-      songs: this.fb.array([
-        this.fb.group({
-          title: ["", Validators.required],
-          artist: ["", Validators.required],
-          duration: ["", Validators.required]
-        })
-      ])
-    });
-  }
-
   initItems(): void {
     this.plyService.getAllPly().subscribe(ply => {
       this.playlists = ply;
     });
   }
+
   addField() {
-    const song = this.fb.group({
-      title: ["", Validators.required],
-      artist: ["", Validators.required],
-      duration: ["", Validators.required]
-    });
-    this.playlistForm.push(song);
+    this.playlistForm.push(this.song);
   }
+
   deleteField(i: number) {
     this.playlistForm.removeAt(i);
   }
+
   onSubmit() {
-    const durationAndLength = this.reduce(this.plyForm.value.songs);
-    this.playlists.unshift({
-      ...this.plyForm.value,
-      ...durationAndLength
-    });
+    this.plyService.submit(this.plyForm.value.songs, this.plyForm.value);
     this.initForm();
   }
 
   onEdit() {
-    const index = this.playlists.indexOf(
-      this.playlists.find(i => i.name == this.each.name)
-    );
-
-    const durationAndLength = this.reduce(this.plyForm.value.songs);
-    this.playlists.splice(index, 1, {
-      ...this.plyForm.value,
-      ...durationAndLength
-    });
+    this.plyService.edit(this.each, this.plyForm.value);
     this.initForm();
     this.editing = false;
   }
 
   onDelete({ name }) {
     return (this.playlists = this.playlists.filter(v => v.name !== name));
-  }
-
-  reduce(params: any[]): Song {
-    let totalDur = 0;
-    return params.reduce((acc, val, _, arr) => {
-      acc["totalDuration"] = totalDur += val.duration;
-      acc["totalSongs"] = arr.length;
-      return acc;
-    }, {});
   }
 }
