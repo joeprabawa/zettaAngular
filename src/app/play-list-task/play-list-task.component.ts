@@ -31,6 +31,12 @@ export class PlayListTaskComponent implements OnInit {
     this.initModal();
   }
 
+  initItems(): void {
+    this.plyService.getAllPly().subscribe(ply => {
+      this.playlists = ply;
+    });
+  }
+
   get playlistForm() {
     return this.plyForm.get("songs") as FormArray;
   }
@@ -43,6 +49,7 @@ export class PlayListTaskComponent implements OnInit {
   initForm() {
     this.plyForm = this.fb.group({
       name: ["", Validators.required],
+      by: ["", Validators.required],
       description: ["", Validators.required],
       songs: this.fb.array([this.song])
     });
@@ -53,25 +60,26 @@ export class PlayListTaskComponent implements OnInit {
     this.each = params;
     this.plyForm = this.fb.group({
       name: ["", Validators.required],
+      by: ["", Validators.required],
       description: ["", Validators.required],
       songs: this.fb.array(params.songs.map(v => this.fb.group(v)))
     });
-    const { name, description, songs } = params;
+    const { name, by, description, songs } = params;
     this.plyForm.patchValue({
       name,
+      by,
       description,
       songs
     });
   }
 
-  initItems(): void {
-    this.plyService.getAllPly().subscribe(ply => {
-      this.playlists = ply;
-    });
-  }
-
   addField() {
-    this.playlistForm.push(this.song);
+    const song: FormGroup = this.fb.group({
+      title: ["", Validators.required],
+      artist: ["", Validators.required],
+      duration: ["", Validators.required]
+    });
+    this.playlistForm.push(song);
   }
 
   deleteField(i: number) {
@@ -89,7 +97,8 @@ export class PlayListTaskComponent implements OnInit {
     this.editing = false;
   }
 
-  onDelete({ name }) {
+  onDelete({ name, id }: any) {
+    this.plyService.delete(id);
     return (this.playlists = this.playlists.filter(v => v.name !== name));
   }
 }

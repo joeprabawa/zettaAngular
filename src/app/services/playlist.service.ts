@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
+import { AngularFirestore } from "@angular/fire/firestore";
 
 import { PLAYLISTS } from "../mock-data/playlists";
 import { Playlist } from "../interfaces/Playlist";
@@ -10,26 +11,38 @@ import { Song } from "../interfaces/Song";
   providedIn: "root"
 })
 export class PlaylistService {
+  constructor(private db: AngularFirestore) {}
+  dbRef = this.db.collection<Playlist>("playlists");
+
   getAllPly(): Observable<Playlist[]> {
-    return of(PLAYLISTS);
+    return this.dbRef.valueChanges();
   }
 
   submit(songs: Song[], formVals: any) {
-    console.log(songs, formVals);
     const durationAndLength = reducing(songs);
-    return PLAYLISTS.unshift({
-      ...formVals,
-      ...durationAndLength
-    });
+    const id = this.db.createId();
+    const doc = { ...formVals, ...durationAndLength, id };
+    this.dbRef.doc(id).set(doc);
+    return PLAYLISTS.unshift(doc);
   }
 
   edit(each: Playlist, formVals: Playlist) {
     const index = PLAYLISTS.indexOf(PLAYLISTS.find(i => i.name == each.name));
     const durationAndLength = reducing(formVals.songs);
-    return PLAYLISTS.splice(index, 1, {
-      ...formVals,
-      ...durationAndLength
+    const doc = { ...formVals, ...durationAndLength };
+    this.dbRef.snapshotChanges().subscribe(vals => {
+      const { id } = vals.find(
+        val => val.payload.doc.id === each.id
+      ).payload.doc;
+      this.dbRef.doc(id).update(doc);
     });
+    return PLAYLISTS.splice(index, 1, doc);
   }
-  constructor() {}
+
+  delete(id: any) {
+    return this.dbRef
+      .doc(id)
+      .delete()
+      .then(doc => console.log(doc));
+  }
 }
