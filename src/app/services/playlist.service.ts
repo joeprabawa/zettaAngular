@@ -30,19 +30,17 @@ export class PlaylistService {
     const index = PLAYLISTS.indexOf(PLAYLISTS.find(i => i.name == each.name));
     const durationAndLength = reducing(formVals.songs);
     const doc = { ...formVals, ...durationAndLength };
+
     this.dbRef.snapshotChanges().subscribe(vals => {
       const { id } = vals.find(
         val => val.payload.doc.id === each.id
       ).payload.doc;
       this.dbRef.doc(id).update(doc);
     });
-    return PLAYLISTS.splice(index, 1, doc);
   }
 
-  delete(id: any) {
-    return this.dbRef
-      .doc(id)
-      .delete()
-      .then(doc => console.log(doc));
+  async delete(id: any) {
+    const deleting = await this.dbRef.doc(id).delete();
+    return deleting;
   }
 }

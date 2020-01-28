@@ -17,7 +17,7 @@ export class PlayListTaskComponent implements OnInit {
   plyForm: FormGroup;
   editing: Boolean;
   each: Playlist;
-  song: FormGroup = this.fb.group({
+  song = this.fb.group({
     title: ["", Validators.required],
     artist: ["", Validators.required],
     duration: ["", Validators.required]
@@ -31,8 +31,8 @@ export class PlayListTaskComponent implements OnInit {
     this.initModal();
   }
 
-  initItems(): void {
-    this.plyService.getAllPly().subscribe(ply => {
+  initItems() {
+    return this.plyService.getAllPly().subscribe(ply => {
       this.playlists = ply;
     });
   }
@@ -43,27 +43,24 @@ export class PlayListTaskComponent implements OnInit {
 
   initModal() {
     let modal = document.querySelectorAll(".modal");
-    let init = M.Modal.init(modal);
+    M.Modal.init(modal);
   }
 
-  initForm() {
-    this.plyForm = this.fb.group({
+  initForm(params?: Playlist) {
+    return (this.plyForm = this.fb.group({
       name: ["", Validators.required],
       by: ["", Validators.required],
       description: ["", Validators.required],
-      songs: this.fb.array([this.song])
-    });
+      songs: !params
+        ? this.fb.array([this.song])
+        : this.fb.array(params.songs.map((v: Song) => this.fb.group(v)))
+    }));
   }
 
-  editingForm(params) {
+  editingForm(params: Playlist) {
     this.editing = true;
     this.each = params;
-    this.plyForm = this.fb.group({
-      name: ["", Validators.required],
-      by: ["", Validators.required],
-      description: ["", Validators.required],
-      songs: this.fb.array(params.songs.map(v => this.fb.group(v)))
-    });
+    this.initForm(params);
     const { name, by, description, songs } = params;
     this.plyForm.patchValue({
       name,
@@ -74,7 +71,7 @@ export class PlayListTaskComponent implements OnInit {
   }
 
   addField() {
-    const song: FormGroup = this.fb.group({
+    const song = this.fb.group({
       title: ["", Validators.required],
       artist: ["", Validators.required],
       duration: ["", Validators.required]
@@ -89,6 +86,7 @@ export class PlayListTaskComponent implements OnInit {
   onSubmit() {
     this.plyService.submit(this.plyForm.value.songs, this.plyForm.value);
     this.initForm();
+    this.song.reset();
   }
 
   onEdit() {
@@ -97,8 +95,12 @@ export class PlayListTaskComponent implements OnInit {
     this.editing = false;
   }
 
-  onDelete({ name, id }: any) {
+  onDelete({ name, id }: Playlist) {
     this.plyService.delete(id);
     return (this.playlists = this.playlists.filter(v => v.name !== name));
+  }
+
+  cancel() {
+    return this.initForm();
   }
 }

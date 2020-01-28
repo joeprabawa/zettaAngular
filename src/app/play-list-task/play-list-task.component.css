@@ -1,10 +1,3 @@
-.grid {
-  display: grid;
-  grid-gap: 10px;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  grid-auto-rows: 40px;
-}
-
 .card {
   box-shadow: none;
   border: 1px solid #e7e7e7b4;
