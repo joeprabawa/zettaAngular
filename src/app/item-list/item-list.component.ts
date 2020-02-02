@@ -39,9 +39,7 @@ export class ItemListComponent implements OnInit {
     // Add / Remove Item From Cart
     cart.addedToCart === true
       ? this.cart.push(cart)
-      : this.cart.filter(v => v.addedToCart === cart.addedToCart);
-
-    this.cart = this.cart.filter(v => v.addedToCart);
+      : (this.cart = this.cart.filter(v => v.addedToCart));
   }
 
   // Calculate cart total

@@ -1,7 +1,5 @@
 .card {
-  -webkit-box-shadow: 10px 10px 0px 0px rgba(242, 245, 155, 1);
-  -moz-box-shadow: 10px 10px 0px 0px rgba(242, 245, 155, 1);
-  box-shadow: 10px 10px 0px 0px rgba(242, 245, 155, 1);
+  box-shadow: none;
 }
 
 .card-content > p.price {

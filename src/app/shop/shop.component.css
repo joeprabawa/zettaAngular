@@ -1,0 +1,52 @@
+.card {
+  box-shadow: none;
+  border: 1px solid #e7e7e7b4;
+  border-radius: 10px;
+}
+
+.modal > .modal-footer {
+  text-align: center;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.input-field {
+  margin: 0.2rem auto;
+}
+
+.input-field.with-span {
+  display: flex;
+  align-items: center;
+}
+
+.input-field.with-button {
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.input-field.with-span > span {
+  margin-left: 8px;
+}
+
+.modal.modal-fixed-footer > .modal-footer {
+  border: none;
+}
+
+.btn-floating.btn-small {
+  width: 26px;
+  height: 26px;
+}
+
+.btn-floating.btn-small i {
+  line-height: 26.5px;
+}
+
+a.btn-floating.form {
+  margin: auto 5px;
+}
+
+.card-title {
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(160, 160, 160, 0.2);
+}

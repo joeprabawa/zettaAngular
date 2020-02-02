@@ -1,0 +1,165 @@
+<div class="row">
+  <div class="col s12 m12">
+    <h3 class="center">Linusu Tech Shop</h3>
+    <p class="center">
+      Welcome to the best tech shop in town! You can buy any PC part you want as
+      long as you have money. But remember kids, don't drop your PC component!
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col s12" *ngFor="let order of orders">
+    <div class="card" style="margin-top: 2rem;">
+      <div class="card-title">
+        <h5 class="header">{{ order.totalPrice | currency }}</h5>
+        <p
+          class="grey-text"
+          style="font-weight: 400; margin-top: -7px; font-size: .85rem;"
+        >
+          By {{ order.cusomerName }} · {{ order.email }}
+        </p>
+      </div>
+      <div class="card-content grey-text text-darken-4">
+        <div class="row" *ngFor="let item of order.items">
+          <div class="col s12">
+            <h5 class="header" style="font-size: 1.2rem;">
+              <i class="material-icons left">audiotrack</i>{{ item.name }}
+              <p class="grey-text" style="font-size: 1rem;">
+                {{ item.category }} · {{ item.price | currency }}
+              </p>
+            </h5>
+          </div>
+        </div>
+      </div>
+      <div class="card-action">
+        <button
+          (click)="onDelete(ply)"
+          class="btn waves-effect waves-red btn-flat red-text"
+        >
+          delete
+        </button>
+        <button
+          (click)="editingForm(ply)"
+          data-target="modal1"
+          class="modal-trigger btn waves-effect waves-light btn-flat black-text"
+        >
+          edit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="fixed-action-btn">
+  <a
+    data-target="modal1"
+    class="btn-floating btn-large modal-trigger waves-effect waves-light yellow lighten-1 "
+  >
+    <i class="large material-icons grey-text text-darken-4">playlist_add</i>
+  </a>
+</div>
+
+<div id="modal1" class="modal modal-fixed-footer">
+  <div class="modal-content">
+    <h5 style="margin-bottom: 1.6rem;">Create New Playlist</h5>
+    <div class="row">
+      <form class="col s12" [formGroup]="itemsForm">
+        <div class="row">
+          <div class="input-field col s12 m6">
+            <input
+              id="playlistname"
+              type="text"
+              class="validate"
+              formControlName="customerName"
+              placeholder="Customer Name"
+              required
+            />
+          </div>
+          <div class="input-field col s12 m6">
+            <input
+              id="by"
+              type="text"
+              class="validate"
+              formControlName="email"
+              placeholder="Email"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="row" formArrayName="items">
+          <div
+            *ngFor="let play of categoriesControl.controls; let i = index"
+            [formGroupName]="i"
+          >
+            <div class="input-field col s12 m4">
+              <select
+                class="browser-default"
+                formControlName="category"
+                (change)="getName(i)"
+              >
+                <option *ngFor="let cat of categories" [ngValue]="cat">{{
+                  cat
+                }}</option>
+              </select>
+            </div>
+            <div class="input-field col s12 m3">
+              <select
+                class="browser-default"
+                formControlName="name"
+                (change)="getPrice(i)"
+              >
+                <option *ngFor="let name of setName[i]" [ngValue]="name?.name"
+                  >{{ name.name }}
+                </option>
+              </select>
+            </div>
+            <div class="input-field col s12 m3 with-span">
+              <select class="browser-default" formControlName="price">
+                <option [ngValue]="getPriceVal(i)">{{ getPriceVal(i) }}</option>
+              </select>
+            </div>
+            <div class="input-field col s12 m2 with-button">
+              <a
+                *ngIf="categoriesControl.length > 1"
+                (click)="deleteField(i)"
+                class="btn-floating btn-small btn-flat waves-effect waves-light red form"
+                ><i class="tiny material-icons">remove</i></a
+              >
+              <a
+                *ngIf="i == categoriesControl.length - 1"
+                (click)="addField()"
+                class="btn-floating btn-small btn-flat waves-effect waves-light indigo form"
+                ><i class="tiny material-icons">add</i></a
+              >
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a
+      class="modal-close waves-effect waves-red lighten-1 btn-flat"
+      (click)="cancel()"
+      >cancel</a
+    >
+    <button
+      *ngIf="!editing"
+      [disabled]="!itemsForm.valid"
+      class="modal-close waves-effect waves-yellow btn-flat"
+      (click)="onSubmit()"
+    >
+      submit
+    </button>
+    <button
+      *ngIf="editing"
+      [disabled]="!itemsForm.valid"
+      class="modal-close waves-effect waves-yellow btn-flat"
+      (click)="onEdit()"
+    >
+      submit
+    </button>
+  </div>
+</div>

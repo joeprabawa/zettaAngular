@@ -13,6 +13,7 @@ declare var M: any;
   styleUrls: ["./play-list-task.component.css"]
 })
 export class PlayListTaskComponent implements OnInit {
+  loading: boolean = false;
   playlists: Playlist[];
   plyForm: FormGroup;
   editing: Boolean;
@@ -29,11 +30,15 @@ export class PlayListTaskComponent implements OnInit {
     this.initForm();
     this.initItems();
     this.initModal();
+    var elems = document.querySelectorAll("select");
+    M.FormSelect.init(elems);
   }
 
   initItems() {
+    this.loading = true;
     return this.plyService.getAllPly().subscribe(ply => {
       this.playlists = ply;
+      this.loading = false;
     });
   }
 
@@ -86,7 +91,6 @@ export class PlayListTaskComponent implements OnInit {
   onSubmit() {
     this.plyService.submit(this.plyForm.value.songs, this.plyForm.value);
     this.initForm();
-    this.song.reset();
   }
 
   onEdit() {

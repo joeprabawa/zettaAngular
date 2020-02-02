@@ -9,15 +9,22 @@ import { environment } from "../environments/environment";
 import { AppComponent } from "./app.component";
 import { ItemListComponent } from "./item-list/item-list.component";
 import { PlayListTaskComponent } from "./play-list-task/play-list-task.component";
+import { ShopComponent } from "./shop/shop.component";
 
 // Initialize Routes
 const appRoutes: Routes = [
   { path: "", component: ItemListComponent },
-  { path: "task-two", component: PlayListTaskComponent }
+  { path: "task-two", component: PlayListTaskComponent },
+  { path: "task-three", component: ShopComponent }
 ];
 
 @NgModule({
-  declarations: [AppComponent, ItemListComponent, PlayListTaskComponent],
+  declarations: [
+    AppComponent,
+    ItemListComponent,
+    PlayListTaskComponent,
+    ShopComponent
+  ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),

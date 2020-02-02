@@ -15,6 +15,10 @@ export class AppComponent {
     {
       name: "Task Two",
       path: "/task-two"
+    },
+    {
+      name: "Task Three",
+      path: "/task-three"
     }
   ];
 }

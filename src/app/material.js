@@ -1,6 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
-  var elems = document.querySelectorAll(".sidenav");
-  var instances = M.Sidenav.init(elems);
-
-
+document.addEventListener("DOMContentLoaded", () => {
+  var elems = document.querySelectorAll("select");
+  M.FormSelect.init(elems);
 });
