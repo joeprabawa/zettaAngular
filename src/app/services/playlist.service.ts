@@ -2,10 +2,9 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { AngularFirestore } from "@angular/fire/firestore";
 
-import { PLAYLISTS } from "../mock-data/playlists";
 import { Playlist } from "../interfaces/Playlist";
-import { reducing } from "../helpers/reduce";
 import { Song } from "../interfaces/Song";
+import { reducing } from "../helpers/reduce";
 
 @Injectable({
   providedIn: "root"
@@ -23,7 +22,6 @@ export class PlaylistService {
     const id = this.db.createId();
     const doc = { ...formVals, ...durationAndLength, id };
     this.dbRef.doc(id).set(doc);
-    return PLAYLISTS.unshift(doc);
   }
 
   edit(each: Playlist, formVals: Playlist) {
