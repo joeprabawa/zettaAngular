@@ -52,9 +52,13 @@
       </div>
       <div class="card-content grey-text text-darken-4">
         <div class="row" *ngFor="let song of ply.songs">
-          <div class="col s12">
+          <div
+            class="col s12"
+            style="display: flex; align-items: center; justify-content: start;"
+          >
+            <i class="material-icons left">audiotrack</i>
             <h5 class="header" style="font-size: 1.2rem;">
-              <i class="material-icons left">audiotrack</i>{{ song.title }}
+              {{ song.title }}
               <p class="grey-text" style="font-size: 1rem;">
                 by {{ song.artist }} · {{ song.duration }}
                 {{ song.duration == 1 ? "minute" : "minutes" }}

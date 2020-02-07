@@ -1,11 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  FormBuilder,
-  FormGroup,
-  FormArray,
-  Validators,
-  FormControl
-} from "@angular/forms";
+import { FormBuilder, FormGroup, FormArray, Validators } from "@angular/forms";
 
 import { Order, Item } from "../interfaces/Shop";
 import {
@@ -14,7 +8,9 @@ import {
   videoCardList,
   memoryList
 } from "./categories";
-import { orders } from "../mock-data/hardware";
+
+import { reducing } from "../helpers/reduce";
+import { OrderService } from "../services/order.service";
 
 declare var M: any;
 
@@ -29,32 +25,47 @@ export class ShopComponent implements OnInit {
   setName = [];
   setPrice = [];
   itemsForm: FormGroup;
+  editing: boolean = false;
+  params: Order;
+  loading: boolean = false;
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private os: OrderService) {}
 
   ngOnInit() {
     this.initModal();
     this.initForm();
-    this.orders = orders;
+    this.initOrders();
   }
 
-  initForm() {
+  initOrders() {
+    this.loading = true;
+    return this.os.getOrders().subscribe(val => {
+      this.orders = val;
+      this.loading = false;
+    });
+  }
+
+  initForm(params?: Order) {
     this.itemsForm = this.fb.group({
       customerName: ["", Validators.required],
       email: ["", Validators.required],
-      items: this.fb.array([
-        this.fb.group({
-          category: ["", Validators.required],
-          name: ["", Validators.required],
-          price: [0, Validators.required]
-        })
-      ])
+      items: !params
+        ? this.fb.array([this.initFormArr()])
+        : this.fb.array(params.items.map(v => this.fb.group(v)))
     });
   }
 
   initModal() {
-    var elems = document.querySelectorAll(".modal");
+    const elems = document.querySelectorAll(".modal");
     M.Modal.init(elems);
+  }
+
+  initFormArr(): FormGroup {
+    return this.fb.group({
+      category: ["", Validators.required],
+      name: ["", Validators.required],
+      price: ["", Validators.required]
+    });
   }
 
   get categoriesControl() {
@@ -62,11 +73,7 @@ export class ShopComponent implements OnInit {
   }
 
   addField() {
-    const newCategories = this.fb.group({
-      category: ["", Validators.required],
-      name: ["", Validators.required],
-      price: [0, Validators.required]
-    });
+    const newCategories = this.initFormArr();
     this.categoriesControl.push(newCategories);
   }
 
@@ -75,16 +82,34 @@ export class ShopComponent implements OnInit {
   }
 
   onSubmit() {
-    let total = 0;
-    const totalPrice = this.itemsForm.value.items.reduce(
-      (acc: object, val: Item) => {
-        acc["totalPrice"] = total += val.price;
-        return acc;
-      },
-      {}
-    );
-    const doc = { ...this.itemsForm.value, ...totalPrice };
-    return this.orders.unshift(doc);
+    this.os.submitOrder(this.itemsForm.value);
+    this.initForm();
+  }
+
+  edit(item: Order) {
+    this.editing = true;
+    this.params = item;
+    this.initForm(item);
+    const { customerName, email, items } = item;
+    this.itemsForm.patchValue({
+      customerName,
+      email,
+      items
+    });
+
+    items.forEach((_, i) => {
+      this.getName(i);
+    });
+  }
+
+  onEdit() {
+    this.os.editOrder(this.itemsForm.value, this.params);
+    this.editing = false;
+    this.initForm();
+  }
+
+  onDelete(order) {
+    this.os.deleteOrder(order);
   }
 
   cancel() {
@@ -92,7 +117,7 @@ export class ShopComponent implements OnInit {
   }
 
   getName(index: number) {
-    const fcCategory = this.getCategory("category", index);
+    const fcCategory = this.getPathOrFcValue("category", index, true);
     fcCategory.toLowerCase() == "cpu"
       ? (this.setName[index] = cpuList)
       : fcCategory.toLowerCase() == "motherboard"
@@ -103,17 +128,15 @@ export class ShopComponent implements OnInit {
   }
 
   getPrice(index: number) {
-    const fcName = this.getCategory("name", index);
+    const fcName = this.getPathOrFcValue("name", index, true);
     const val = this.setName[index].find((v: Item) => v.name === fcName);
-    const path = this.categoriesControl.at(index).get("price");
+    const path = this.getPathOrFcValue("price", index);
     return path.setValue(val.price);
   }
 
-  getCategory(params: string, index: number) {
-    return this.categoriesControl.at(index).get(params).value;
-  }
-
-  getPriceVal(index: number) {
-    return this.categoriesControl.at(index).get("price").value;
+  getPathOrFcValue(params: string, index: number, value?: boolean) {
+    return value
+      ? this.categoriesControl.at(index).get(params).value
+      : this.categoriesControl.at(index).get(params);
   }
 }

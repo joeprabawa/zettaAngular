@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
+import { Observable } from "rxjs";
 import { AngularFirestore } from "@angular/fire/firestore";
 
 import { PLAYLISTS } from "../mock-data/playlists";
@@ -19,7 +19,7 @@ export class PlaylistService {
   }
 
   submit(songs: Song[], formVals: any) {
-    const durationAndLength = reducing(songs);
+    const durationAndLength = reducing(songs, "playlist");
     const id = this.db.createId();
     const doc = { ...formVals, ...durationAndLength, id };
     this.dbRef.doc(id).set(doc);
@@ -27,8 +27,7 @@ export class PlaylistService {
   }
 
   edit(each: Playlist, formVals: Playlist) {
-    const index = PLAYLISTS.indexOf(PLAYLISTS.find(i => i.name == each.name));
-    const durationAndLength = reducing(formVals.songs);
+    const durationAndLength = reducing(formVals.songs, "playlist");
     const doc = { ...formVals, ...durationAndLength };
 
     this.dbRef.snapshotChanges().subscribe(vals => {

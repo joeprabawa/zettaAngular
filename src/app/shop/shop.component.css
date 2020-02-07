@@ -50,3 +50,9 @@ a.btn-floating.form {
   padding: 16px 24px;
   border-bottom: 1px solid rgba(160, 160, 160, 0.2);
 }
+
+.flexed-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
