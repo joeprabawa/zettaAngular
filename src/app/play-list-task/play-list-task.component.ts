@@ -66,13 +66,13 @@ export class PlayListTaskComponent implements OnInit {
     this.editing = true;
     this.each = params;
     const { name, by, description, songs } = params;
+    this.initForm(params);
     this.plyForm.patchValue({
       name,
       by,
       description,
       songs
     });
-    this.initForm(params);
   }
 
   addField() {
