@@ -9,7 +9,6 @@ import {
   memoryList
 } from "./categories";
 
-import { reducing } from "../helpers/reduce";
 import { OrderService } from "../services/order.service";
 
 declare var M: any;
