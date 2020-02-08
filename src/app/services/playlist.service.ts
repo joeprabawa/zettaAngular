@@ -1,6 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AngularFirestore } from "@angular/fire/firestore";
+import {
+  AngularFirestore,
+  AngularFirestoreCollection
+} from "@angular/fire/firestore";
 
 import { Playlist } from "../interfaces/Playlist";
 import { Song } from "../interfaces/Song";
@@ -10,29 +13,27 @@ import { reducing } from "../helpers/reduce";
   providedIn: "root"
 })
 export class PlaylistService {
-  constructor(private db: AngularFirestore) {}
-  dbRef = this.db.collection<Playlist>("playlists");
+  private dbRef: AngularFirestoreCollection<Playlist>;
+  constructor(private db: AngularFirestore) {
+    this.dbRef = this.db.collection<Playlist>("playlists");
+  }
 
   getAllPly(): Observable<Playlist[]> {
-    return this.dbRef.valueChanges();
+    return this.dbRef.valueChanges({ idField: "id" });
   }
 
   submit(songs: Song[], formVals: any) {
     const durationAndLength = reducing(songs, "playlist");
-    const id = this.db.createId();
-    const doc = { ...formVals, ...durationAndLength, id };
-    this.dbRef.doc(id).set(doc);
+    const doc = { ...formVals, ...durationAndLength };
+    this.dbRef.add(doc);
   }
 
   edit(each: Playlist, formVals: Playlist) {
     const durationAndLength = reducing(formVals.songs, "playlist");
     const doc = { ...formVals, ...durationAndLength };
-
-    this.dbRef.snapshotChanges().subscribe(vals => {
-      const { id } = vals.find(
-        val => val.payload.doc.id === each.id
-      ).payload.doc;
-      this.dbRef.doc(id).update(doc);
+    this.dbRef.valueChanges({ idField: "id" }).subscribe(vals => {
+      const { id } = vals.find(({ id }) => id === each.id);
+      return this.dbRef.doc(id).update(doc);
     });
   }
 

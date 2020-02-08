@@ -37,6 +37,7 @@ export class PlayListTaskComponent implements OnInit {
   initItems() {
     this.loading = true;
     return this.plyService.getAllPly().subscribe(ply => {
+      console.log(ply);
       this.playlists = ply;
       this.loading = false;
     });

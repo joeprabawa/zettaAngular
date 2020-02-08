@@ -18,7 +18,7 @@
 </div>
 
 <div class="row">
-  <div class="col s12 center" *ngIf="loading">
+  <div class="col s12 center" *ngIf="loading; else notLoading">
     <div class="preloader-wrapper big active">
       <div class="spinner-layer spinner-yellow-only">
         <div class="circle-clipper left">
@@ -33,57 +33,69 @@
       </div>
     </div>
   </div>
-  <div class="col s12" *ngFor="let ply of playlists">
-    <div class="card" style="margin-top: 2rem;">
-      <div class="card-title">
-        <h5 class="header">{{ ply.name }}</h5>
-        <p
-          class="grey-text"
-          style="font-weight: 400; margin-top: -7px; font-size: 0.85rem;"
+  <ng-template #notLoading>
+    <div class="col s12 ">
+      <div
+        class="card-panel card white"
+        style="border-left:10px solid #ffee58 "
+      >
+        <span class="black-text"
+          >{{ playlists.length }} Collection of Playlists</span
         >
-          {{ ply.totalSongs }} {{ totalSongs == 1 ? "song" : "songs" }},
-          {{ ply.totalDuration }} minutes · {{ ply.by }}
-        </p>
-        <p
-          style="font-size: 1rem; margin: -5px 0; font-weight: 400; text-transform: capitalize;"
-        >
-          {{ ply.description }}
-        </p>
-      </div>
-      <div class="card-content grey-text text-darken-4">
-        <div class="row" *ngFor="let song of ply.songs">
-          <div
-            class="col s12"
-            style="display: flex; align-items: center; justify-content: start;"
-          >
-            <i class="material-icons left">audiotrack</i>
-            <h5 class="header" style="font-size: 1.2rem;">
-              {{ song.title }}
-              <p class="grey-text" style="font-size: 1rem;">
-                by {{ song.artist }} · {{ song.duration }}
-                {{ song.duration == 1 ? "minute" : "minutes" }}
-              </p>
-            </h5>
-          </div>
-        </div>
-      </div>
-      <div class="card-action">
-        <button
-          (click)="onDelete(ply)"
-          class="btn waves-effect waves-red btn-flat red-text"
-        >
-          delete
-        </button>
-        <button
-          (click)="editingForm(ply)"
-          data-target="modal1"
-          class="modal-trigger btn waves-effect waves-light btn-flat black-text"
-        >
-          edit
-        </button>
       </div>
     </div>
-  </div>
+    <div class="col s12" *ngFor="let ply of playlists">
+      <div class="card" style="margin-top: 2rem;">
+        <div class="card-title">
+          <h5 class="header">{{ ply.name }}</h5>
+          <p
+            class="grey-text"
+            style="font-weight: 400; margin-top: -7px; font-size: 0.85rem;"
+          >
+            {{ ply.totalSongs }} {{ totalSongs == 1 ? "song" : "songs" }},
+            {{ ply.totalDuration }} minutes · {{ ply.by }}
+          </p>
+          <p
+            style="font-size: 1rem; margin: -5px 0; font-weight: 400; text-transform: capitalize;"
+          >
+            {{ ply.description }}
+          </p>
+        </div>
+        <div class="card-content grey-text text-darken-4">
+          <div class="row" *ngFor="let song of ply.songs">
+            <div
+              class="col s12"
+              style="display: flex; align-items: center; justify-content: start;"
+            >
+              <i class="material-icons left">audiotrack</i>
+              <h5 class="header" style="font-size: 1.2rem;">
+                {{ song.title }}
+                <p class="grey-text" style="font-size: 1rem;">
+                  by {{ song.artist }} · {{ song.duration }}
+                  {{ song.duration == 1 ? "minute" : "minutes" }}
+                </p>
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="card-action">
+          <button
+            (click)="onDelete(ply)"
+            class="btn waves-effect waves-red btn-flat red-text"
+          >
+            delete
+          </button>
+          <button
+            (click)="editingForm(ply)"
+            data-target="modal1"
+            class="modal-trigger btn waves-effect waves-light btn-flat black-text"
+          >
+            edit
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 </div>
 
 <!-- Modal New Playlist -->
