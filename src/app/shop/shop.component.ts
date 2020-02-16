@@ -39,7 +39,6 @@ export class ShopComponent implements OnInit {
   initOrders() {
     this.loading = true;
     return this.os.getOrders().subscribe(val => {
-      console.log(val);
       this.orders = val;
       this.loading = false;
     });

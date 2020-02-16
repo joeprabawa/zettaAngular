@@ -69,8 +69,8 @@ export class ItemListComponent implements OnInit {
     this.getItems();
     M.toast({
       html: `<i class="material-icons left">info_outline</i>Scroll to bottom of the page, to view cart section`,
-      classes: "rounded yellow lighten-1 grey-text text-darken-4",
-      displayLength: 6000,
+      classes: "rounded yellow lighten-1 grey-text text-darken-4 toast-margin",
+      displayLength: 5000,
       inDuration: 500,
       outDuration: 750
     });

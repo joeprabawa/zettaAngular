@@ -18,6 +18,7 @@ export class PlayListTaskComponent implements OnInit {
   plyForm: FormGroup;
   editing: Boolean;
   each: Playlist;
+
   song = this.fb.group({
     title: ["", Validators.required],
     artist: ["", Validators.required],
@@ -30,17 +31,17 @@ export class PlayListTaskComponent implements OnInit {
     this.initForm();
     this.initItems();
     this.initModal();
-    var elems = document.querySelectorAll("select");
-    M.FormSelect.init(elems);
   }
 
   initItems() {
     this.loading = true;
-    return this.plyService.getAllPly().subscribe(ply => {
-      console.log(ply);
+    const obs = this.plyService.getAllPly().subscribe(ply => {
       this.playlists = ply;
       this.loading = false;
     });
+
+    console.log(obs);
+    return obs;
   }
 
   get playlistForm() {
@@ -90,8 +91,7 @@ export class PlayListTaskComponent implements OnInit {
   }
 
   onSubmit() {
-    this.plyService.submit(this.plyForm.value.songs, this.plyForm.value);
-    this.initForm();
+    return this.plyService.submit(this.plyForm.value.songs, this.plyForm.value);
   }
 
   onEdit() {
