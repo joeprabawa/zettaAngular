@@ -28,9 +28,10 @@ export class OrderService {
     const doc = { ...formVal, ...totalPrice };
     const data = await this.dbRef.add(doc);
     return data.onSnapshot(obs => {
-      const { customerName, items } = obs.data();
       M.toast({
-        html: ` <i class="material-icons left">done</i>${items.length} items by ${customerName} Success Added!`,
+        html: ` <i class="material-icons left">done</i>Order ${obs.id
+          .toString()
+          .toUpperCase()} Success Added!`,
         classes: "rounded green lighten-1"
       });
     });
@@ -46,22 +47,28 @@ export class OrderService {
     });
     M.toast({
       html: ` <i class="material-icons left">done</i>Success Edited!`,
-      classes: "rounded green lighten-1",
-      displayLength: 10000
+      classes: "rounded green lighten-1"
     });
     return subscriptions;
   }
 
-  deleteOrder(args) {
-    this.dbRef.valueChanges({ idField: "id" }).subscribe(vals => {
-      const { id, customerName } = vals.find(v => v.id === args.id);
-      M.toast({
-        html: ` <i class="material-icons left">block</i> ID : ${id
-          .toString()
-          .toLowerCase()} - Order by ${customerName} Removed!`,
-        classes: "rounded red lighten-1"
+  deleteOrder(args: Order) {
+    this.dbRef
+      .valueChanges({ idField: "id" })
+      .pipe(take(1))
+      .subscribe(async (vals: Order[]) => {
+        const { id } = vals.find(v => v.id === args.id);
+        return this.dbRef
+          .doc(id)
+          .delete()
+          .then(() => {
+            M.toast({
+              html: ` <i class="material-icons left">block</i>Order - ${id
+                .toString()
+                .toUpperCase()} Removed!`,
+              classes: "rounded blue-grey darken-4"
+            });
+          });
       });
-      return this.dbRef.doc(id).delete();
-    });
   }
 }

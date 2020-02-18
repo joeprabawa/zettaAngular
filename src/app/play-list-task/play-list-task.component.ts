@@ -3,7 +3,9 @@ import { FormBuilder, FormGroup, FormArray, Validators } from "@angular/forms";
 
 import { PlaylistService } from "../services/playlist.service";
 import { Playlist } from "../interfaces/Playlist";
+import { AuthService } from "../services/auth.service";
 import { Song } from "../interfaces/Song";
+import { User } from "../interfaces/user";
 
 declare var M: any;
 
@@ -18,6 +20,7 @@ export class PlayListTaskComponent implements OnInit {
   plyForm: FormGroup;
   editing: Boolean;
   each: Playlist;
+  user: User;
 
   song = this.fb.group({
     title: ["", Validators.required],
@@ -25,23 +28,35 @@ export class PlayListTaskComponent implements OnInit {
     duration: ["", Validators.required]
   });
 
-  constructor(private fb: FormBuilder, private plyService: PlaylistService) {}
+  constructor(
+    private fb: FormBuilder,
+    private plyService: PlaylistService,
+    private as: AuthService
+  ) {}
 
   ngOnInit() {
+    this.authState();
     this.initForm();
     this.initItems();
     this.initModal();
+    var elems = document.querySelectorAll(".fixed-action-btn");
+    M.FloatingActionButton.init(elems, {
+      direction: "left",
+      hoverEnabled: false
+    });
+  }
+
+  authState() {
+    console.log(JSON.parse(localStorage.getItem("user")));
   }
 
   initItems() {
     this.loading = true;
-    const obs = this.plyService.getAllPly().subscribe(ply => {
+    return this.plyService.getAllPly().subscribe(ply => {
+      console.log(ply);
       this.playlists = ply;
       this.loading = false;
     });
-
-    console.log(obs);
-    return obs;
   }
 
   get playlistForm() {
@@ -107,5 +122,13 @@ export class PlayListTaskComponent implements OnInit {
 
   cancel() {
     return this.initForm();
+  }
+
+  login() {
+    this.as.GoogleAuth();
+  }
+
+  logout() {
+    this.as.SignOut().then(() => console.log("Logged Out"));
   }
 }

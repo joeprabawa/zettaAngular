@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { take } from "rxjs/operators";
+import { take, map, find } from "rxjs/operators";
 import {
   AngularFirestore,
   AngularFirestoreCollection
@@ -22,19 +22,24 @@ export class PlaylistService {
   }
 
   getAllPly(): Observable<Playlist[]> {
-    return this.dbRef.valueChanges({ idField: "id" });
+    return this.dbRef.snapshotChanges().pipe(
+      map(actions =>
+        actions.map(a => {
+          const data = a.payload.doc.data() as Playlist;
+          const id = a.payload.doc.id;
+          return { id, ...data };
+        })
+      )
+    );
   }
 
   async submit(songs: Song[], formVals: any) {
     const durationAndLength = reducing(songs, "playlist");
     const doc = { ...formVals, ...durationAndLength };
-    const data = await this.dbRef.add(doc);
-    return data.onSnapshot(obs => {
-      const { name } = obs.data();
-      M.toast({
-        html: ` <i class="material-icons left">done</i>${name} Success Added!`,
-        classes: "rounded green lighten-1"
-      });
+    await this.dbRef.add(doc);
+    M.toast({
+      html: ` <i class="material-icons left">done</i>Playlist Success Added!`,
+      classes: "rounded green lighten-1"
     });
   }
 
@@ -55,15 +60,20 @@ export class PlaylistService {
   }
 
   delete(uid: any) {
-    this.dbRef.valueChanges({ idField: "id" }).subscribe(vals => {
-      const { id, name } = vals.find(v => v.id === uid);
-      M.toast({
-        html: ` <i class="material-icons left">block</i> ID : ${id
-          .toString()
-          .toLowerCase()} - ${name} Removed!`,
-        classes: "rounded red lighten-1"
+    this.dbRef
+      .valueChanges({ idField: "id" })
+      .pipe(take(1))
+      .subscribe(async (vals: Playlist[]) => {
+        const { id, name } = vals.find(v => v.id === uid);
+        return this.dbRef
+          .doc(id.toString())
+          .delete()
+          .then(() => {
+            M.toast({
+              html: ` <i class="material-icons left">block</i>${name} Removed!`,
+              classes: "rounded grey darken-4"
+            });
+          });
       });
-      return this.dbRef.doc(id).delete();
-    });
   }
 }
