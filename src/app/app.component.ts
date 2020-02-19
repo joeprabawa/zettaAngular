@@ -40,43 +40,30 @@ export class AppComponent implements OnInit {
   ];
 
   authState() {
-    return this.as.authState().subscribe(user => {
-      user ? (this.isLoggedin = true) : (this.isLoggedin = false);
-      const getUser = {
-        uid: user.uid,
-        email: user.email,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-        emailVerified: user.emailVerified
-      };
-      this.userComponent = getUser;
-      console.log(this.userComponent);
+    this.as.getUser().subscribe(uFromService => {
+      uFromService ? this.as.authState(true) : this.as.authState(false);
+      console.log(uFromService);
+      if (uFromService) {
+        const getUser = {
+          uid: uFromService.uid,
+          email: uFromService.email,
+          displayName: uFromService.displayName,
+          photoURL: uFromService.photoURL,
+          emailVerified: uFromService.emailVerified
+        };
+        this.userComponent = getUser;
+      }
     });
   }
 
   signOut() {
     return this.as.SignOut().then(() => {
-      this.as.authState().subscribe(user => {
-        this.isLoggedin = false;
-        this.userComponent = user;
-      });
+      this.as.authState(false);
+      this.as.getUser().subscribe(user => (this.userComponent = user));
     });
   }
 
   signIn() {
-    return this.as.GoogleAuth().then(() => {
-      this.isLoggedin = true;
-      this.as.authState().subscribe(user => {
-        this.isLoggedin = true;
-        const getUser = {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          photoURL: user.photoURL,
-          emailVerified: user.emailVerified
-        };
-        this.userComponent = getUser;
-      });
-    });
+    this.as.GoogleAuth().then(() => this.as.authState(true));
   }
 }

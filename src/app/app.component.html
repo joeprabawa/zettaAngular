@@ -55,10 +55,10 @@
     </li>
     <li><div class="divider"></div></li>
   </span>
-  <li *ngIf="isLoggedin">
+  <li>
     <a class="waves-effect waves-teal btn-flat" (click)="signOut()">Sign Out</a>
   </li>
-  <li *ngIf="!isLoggedin">
+  <li>
     <a class="waves-effect waves-teal btn-flat" (click)="signIn()">Sign In</a>
   </li>
 </ul>

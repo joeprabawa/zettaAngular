@@ -1,11 +1,10 @@
-import { Component, OnInit, OnChanges, SimpleChanges } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, FormArray, Validators } from "@angular/forms";
 
 import { PlaylistService } from "../services/playlist.service";
 import { Playlist } from "../interfaces/Playlist";
 import { AuthService } from "../services/auth.service";
 import { Song } from "../interfaces/Song";
-import { take } from "rxjs/operators";
 
 declare var M: any;
 
@@ -14,7 +13,7 @@ declare var M: any;
   templateUrl: "./play-list-task.component.html",
   styleUrls: ["./play-list-task.component.css"]
 })
-export class PlayListTaskComponent implements OnInit, OnChanges {
+export class PlayListTaskComponent implements OnInit {
   loading: boolean = false;
   playlists: Playlist[];
   plyForm: FormGroup;
@@ -28,19 +27,14 @@ export class PlayListTaskComponent implements OnInit, OnChanges {
     duration: ["", Validators.required]
   });
 
-  ngOnChanges(changes: SimpleChanges) {
-    console.log(changes);
-  }
-
   constructor(
     private fb: FormBuilder,
     private plyService: PlaylistService,
     private as: AuthService
-  ) {
-    this.authState();
-  }
+  ) {}
 
   ngOnInit() {
+    this.authState();
     this.initForm();
     this.initItems();
     this.initModal();
@@ -52,18 +46,21 @@ export class PlayListTaskComponent implements OnInit, OnChanges {
   }
 
   authState() {
-    this.as
-      .authState()
-      .pipe(take(1))
-      .subscribe(user => {
-        user ? (this.isLoggedin = true) : (this.isLoggedin = false);
-        if (this.isLoggedin) {
-          M.toast({
-            html: ` <i class="material-icons left">done</i>Welcome Back ${user.displayName}`,
-            classes: "rounded green lighten-1"
-          });
-        }
+    this.as.getUser().subscribe(user => {
+      this.as.isLoggedin$.subscribe(val => {
+        console.log(val);
+        this.isLoggedin = val;
+        this.isLoggedin
+          ? M.toast({
+              html: `<i class="material-icons left">done</i>Welcome Back ${user.displayName}!`,
+              classes: "rounded green lighten-1"
+            })
+          : M.toast({
+              html: ` <i class="material-icons left">done</i>Logged Out!`,
+              classes: "rounded grey darken-4"
+            });
       });
+    });
   }
 
   initItems() {

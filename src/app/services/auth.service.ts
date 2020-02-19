@@ -6,6 +6,7 @@ import {
   AngularFirestore,
   AngularFirestoreDocument
 } from "@angular/fire/firestore";
+import { BehaviorSubject } from "rxjs";
 
 @Injectable({
   providedIn: "root"
@@ -13,7 +14,14 @@ import {
 export class AuthService {
   constructor(public afs: AngularFirestore, public afu: AngularFireAuth) {}
 
-  authState() {
+  private isLoggedin = new BehaviorSubject<boolean>(false);
+  isLoggedin$ = this.isLoggedin.asObservable();
+
+  authState(value: boolean) {
+    return this.isLoggedin.next(value);
+  }
+
+  getUser() {
     return this.afu.authState;
   }
 
