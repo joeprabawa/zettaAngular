@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnChanges, SimpleChanges } from "@angular/core";
 import { FormBuilder, FormGroup, FormArray, Validators } from "@angular/forms";
 
 import { PlaylistService } from "../services/playlist.service";
 import { Playlist } from "../interfaces/Playlist";
 import { AuthService } from "../services/auth.service";
 import { Song } from "../interfaces/Song";
-import { User } from "../interfaces/user";
+import { take } from "rxjs/operators";
 
 declare var M: any;
 
@@ -14,13 +14,13 @@ declare var M: any;
   templateUrl: "./play-list-task.component.html",
   styleUrls: ["./play-list-task.component.css"]
 })
-export class PlayListTaskComponent implements OnInit {
+export class PlayListTaskComponent implements OnInit, OnChanges {
   loading: boolean = false;
   playlists: Playlist[];
   plyForm: FormGroup;
   editing: Boolean;
   each: Playlist;
-  user: User;
+  isLoggedin: Boolean;
 
   song = this.fb.group({
     title: ["", Validators.required],
@@ -28,14 +28,19 @@ export class PlayListTaskComponent implements OnInit {
     duration: ["", Validators.required]
   });
 
+  ngOnChanges(changes: SimpleChanges) {
+    console.log(changes);
+  }
+
   constructor(
     private fb: FormBuilder,
     private plyService: PlaylistService,
     private as: AuthService
-  ) {}
+  ) {
+    this.authState();
+  }
 
   ngOnInit() {
-    this.authState();
     this.initForm();
     this.initItems();
     this.initModal();
@@ -47,7 +52,18 @@ export class PlayListTaskComponent implements OnInit {
   }
 
   authState() {
-    console.log(JSON.parse(localStorage.getItem("user")));
+    this.as
+      .authState()
+      .pipe(take(1))
+      .subscribe(user => {
+        user ? (this.isLoggedin = true) : (this.isLoggedin = false);
+        if (this.isLoggedin) {
+          M.toast({
+            html: ` <i class="material-icons left">done</i>Welcome Back ${user.displayName}`,
+            classes: "rounded green lighten-1"
+          });
+        }
+      });
   }
 
   initItems() {
@@ -122,13 +138,5 @@ export class PlayListTaskComponent implements OnInit {
 
   cancel() {
     return this.initForm();
-  }
-
-  login() {
-    this.as.GoogleAuth();
-  }
-
-  logout() {
-    this.as.SignOut().then(() => console.log("Logged Out"));
   }
 }

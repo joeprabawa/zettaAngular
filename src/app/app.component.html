@@ -1,6 +1,9 @@
 <nav class="white z-depth-0">
   <div class="nav-wrapper container ">
-    <ul id="nav-mobile" class="right">
+    <span class="grey-text text-darken-1">
+      <i class="material-icons sidenav-trigger" data-target="side-menu">menu</i>
+    </span>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
       <li
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
@@ -14,6 +17,51 @@
   </div>
 </nav>
 
+<ul id="side-menu" class="sidenav">
+  <li>
+    <div class="user-view">
+      <div class="background">
+        <img src="https://materializecss.com/images/office.jpg" />
+      </div>
+      <a href="#user"
+        ><img
+          class="circle"
+          src="{{
+            userComponent
+              ? userComponent.photoURL
+              : 'https://image.flaticon.com/icons/svg/149/149452.svg'
+          }}"
+      /></a>
+      <a href="#name"
+        ><span class="white-text name">{{
+          userComponent ? userComponent.displayName : "Guest"
+        }}</span></a
+      >
+      <a href="#email"
+        ><span class="white-text email">{{
+          userComponent ? userComponent.email : "Guest"
+        }}</span></a
+      >
+    </div>
+  </li>
+  <span *ngFor="let route of routes">
+    <li>
+      <a class="subheader">{{ route.name }}</a>
+    </li>
+    <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+      <a class="grey-text text-darken-4" routerLink="{{ route.path }}">
+        {{ route.desc }}
+      </a>
+    </li>
+    <li><div class="divider"></div></li>
+  </span>
+  <li *ngIf="isLoggedin">
+    <a class="waves-effect waves-teal btn-flat" (click)="signOut()">Sign Out</a>
+  </li>
+  <li *ngIf="!isLoggedin">
+    <a class="waves-effect waves-teal btn-flat" (click)="signIn()">Sign In</a>
+  </li>
+</ul>
 <div class="container">
   <router-outlet></router-outlet>
 </div>

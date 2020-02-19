@@ -10,23 +10,11 @@
 
 <div class="fixed-action-btn">
   <a
-    class="btn-floating btn-large  waves-effect waves-light yellow lighten-1 "
-    (click)="login()"
+    *ngIf="isLoggedin"
+    data-target="modal1"
+    class="btn-floating btn-large modal-trigger waves-effect waves-light yellow lighten-1 "
+    ><i class="material-icons grey-text text-darken-4">playlist_add</i></a
   >
-    <i class="large material-icons grey-text text-darken-4">exit_to_app</i>
-  </a>
-  <ul>
-    <li>
-      <a data-target="modal1" class="btn-floating red modal-trigger"
-        ><i class="material-icons">playlist_add</i></a
-      >
-    </li>
-    <li>
-      <a class="btn-floating yellow darken-1" (click)="logout()"
-        ><i class="material-icons">logout</i></a
-      >
-    </li>
-  </ul>
 </div>
 
 <div class="row">

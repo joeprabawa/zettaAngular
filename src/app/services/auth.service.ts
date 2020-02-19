@@ -6,32 +6,21 @@ import {
   AngularFirestore,
   AngularFirestoreDocument
 } from "@angular/fire/firestore";
-import { take } from "rxjs/operators";
 
 @Injectable({
   providedIn: "root"
 })
 export class AuthService {
-  userData: User;
+  constructor(public afs: AngularFirestore, public afu: AngularFireAuth) {}
 
-  constructor(public afs: AngularFirestore, public afu: AngularFireAuth) {
-    this.afu.authState.pipe(take(1)).subscribe(user => {
-      if (user) {
-        this.userData = user;
-        localStorage.setItem("user", JSON.stringify(this.userData));
-        JSON.parse(localStorage.getItem("user"));
-      } else {
-        localStorage.setItem("user", null);
-        JSON.parse(localStorage.getItem("user"));
-      }
-    });
+  authState() {
+    return this.afu.authState;
   }
 
   GoogleAuth() {
     return this.AuthLogin(new auth.GoogleAuthProvider());
   }
 
-  // Auth logic to run auth providers
   AuthLogin(provider) {
     return this.afu.auth
       .signInWithPopup(provider)
@@ -63,7 +52,7 @@ export class AuthService {
   SignOut() {
     return this.afu.auth.signOut().then(() => {
       localStorage.removeItem("user");
-      this.userData = null;
+      // this.userData = null;
     });
   }
 }
