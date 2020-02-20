@@ -1,3 +1,10 @@
 ::ng-deep body {
   background-color: #f3f3f37a;
 }
+
+a.sign-out,
+a.sign-in {
+  box-shadow: none;
+  border: 1px solid #e7e7e7b4;
+  border-radius: 10px;
+}

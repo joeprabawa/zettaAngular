@@ -18,13 +18,17 @@
 </nav>
 
 <ul id="side-menu" class="sidenav">
-  <li>
+  <li class="center-align">
     <div class="user-view">
-      <div class="background">
-        <img src="https://materializecss.com/images/office.jpg" />
+      <div class="background yellow lighten-1">
+        <img
+          style="opacity: 0.2;"
+          src="https://materializecss.com/images/office.jpg"
+        />
       </div>
-      <a href="#user"
+      <a
         ><img
+          style="margin: auto;"
           class="circle"
           src="{{
             userComponent
@@ -33,12 +37,14 @@
           }}"
       /></a>
       <a href="#name"
-        ><span class="white-text name">{{
-          userComponent ? userComponent.displayName : "Guest"
-        }}</span></a
+        ><span
+          class="grey-text text-darken-4 name"
+          style="font-size: 1.5rem;"
+          >{{ userComponent ? userComponent.displayName : "Guest" }}</span
+        ></a
       >
       <a href="#email"
-        ><span class="white-text email">{{
+        ><span class="grey-text text-darken-1 email">{{
           userComponent ? userComponent.email : "Guest"
         }}</span></a
       >
@@ -55,11 +61,18 @@
     </li>
     <li><div class="divider"></div></li>
   </span>
-  <li>
-    <a class="waves-effect waves-teal btn-flat" (click)="signOut()">Sign Out</a>
+  <li *ngIf="isLoggedin">
+    <a class="waves-effect waves-grey btn-flat sign-out" (click)="signOut()"
+      ><i style="font-size: 1.6rem;" class="material-icons left">exit_to_app</i
+      >Sign Out</a
+    >
   </li>
-  <li>
-    <a class="waves-effect waves-teal btn-flat" (click)="signIn()">Sign In</a>
+  <li *ngIf="!isLoggedin">
+    <a
+      class="waves-effect waves-grey btn-flat center-align sign-in"
+      (click)="signIn()"
+      >Sign In</a
+    >
   </li>
 </ul>
 <div class="container">

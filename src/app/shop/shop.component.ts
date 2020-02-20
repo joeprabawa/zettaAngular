@@ -10,6 +10,7 @@ import {
 } from "./categories";
 
 import { OrderService } from "../services/order.service";
+import { AuthService } from "../services/auth.service";
 
 declare var M: any;
 
@@ -27,13 +28,19 @@ export class ShopComponent implements OnInit {
   editing: boolean = false;
   params: Order;
   loading: boolean = false;
+  isLoggedin: boolean;
 
-  constructor(private fb: FormBuilder, private os: OrderService) {}
+  constructor(
+    private fb: FormBuilder,
+    private os: OrderService,
+    private au: AuthService
+  ) {}
 
   ngOnInit() {
     this.initModal();
     this.initForm();
     this.initOrders();
+    this.au.isLoggedin$.subscribe(status => (this.isLoggedin = status));
   }
 
   initOrders() {

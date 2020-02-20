@@ -55,7 +55,6 @@ export class PlaylistService {
       html: ` <i class="material-icons left">done</i>Success Edited!`,
       classes: "rounded green lighten-1"
     });
-    console.log(subscriptions);
     return subscriptions;
   }
 

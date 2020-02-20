@@ -46,27 +46,15 @@ export class PlayListTaskComponent implements OnInit {
   }
 
   authState() {
-    this.as.getUser().subscribe(user => {
-      this.as.isLoggedin$.subscribe(val => {
-        console.log(val);
-        this.isLoggedin = val;
-        this.isLoggedin
-          ? M.toast({
-              html: `<i class="material-icons left">done</i>Welcome Back ${user.displayName}!`,
-              classes: "rounded green lighten-1"
-            })
-          : M.toast({
-              html: ` <i class="material-icons left">done</i>Logged Out!`,
-              classes: "rounded grey darken-4"
-            });
-      });
+    this.as.isLoggedin$.subscribe(val => {
+      console.log(val);
+      this.isLoggedin = val;
     });
   }
 
   initItems() {
     this.loading = true;
     return this.plyService.getAllPly().subscribe(ply => {
-      console.log(ply);
       this.playlists = ply;
       this.loading = false;
     });

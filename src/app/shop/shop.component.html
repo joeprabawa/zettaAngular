@@ -84,7 +84,7 @@
   </ng-template>
 </div>
 
-<div class="fixed-action-btn">
+<div class="fixed-action-btn" *ngIf="isLoggedin">
   <a
     data-target="modal1"
     class="btn-floating btn-large modal-trigger waves-effect waves-light yellow lighten-1 "

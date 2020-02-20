@@ -41,8 +41,15 @@ export class AppComponent implements OnInit {
 
   authState() {
     this.as.getUser().subscribe(uFromService => {
-      uFromService ? this.as.authState(true) : this.as.authState(false);
-      console.log(uFromService);
+      uFromService
+        ? (this.as.authState(true),
+          (this.isLoggedin = true),
+          M.toast({
+            html: ` <i class="material-icons left">perm_identity</i>Welcome Back ${uFromService.displayName} !`,
+            classes: "rounded grey darken-4"
+          }))
+        : (this.as.authState(false), (this.isLoggedin = false));
+
       if (uFromService) {
         const getUser = {
           uid: uFromService.uid,
@@ -59,11 +66,14 @@ export class AppComponent implements OnInit {
   signOut() {
     return this.as.SignOut().then(() => {
       this.as.authState(false);
+
       this.as.getUser().subscribe(user => (this.userComponent = user));
     });
   }
 
   signIn() {
-    this.as.GoogleAuth().then(() => this.as.authState(true));
+    this.as.GoogleAuth().then(() => {
+      this.as.authState(true);
+    });
   }
 }
